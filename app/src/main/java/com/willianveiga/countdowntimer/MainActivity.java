@@ -18,10 +18,12 @@
 package com.willianveiga.countdowntimer;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -185,13 +187,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Obse
     }
 
     private void timeFinished() {
-        vibrate();
         showTimeFinishedAlertDialog();
-    }
-
-    private void vibrate() {
-        Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(1500);
+        showNotification();
     }
 
     private void showTimeFinishedAlertDialog() {
@@ -202,5 +199,28 @@ public class MainActivity extends Activity implements View.OnClickListener, Obse
                 dialogInterface.cancel();
             }
         }).show();
+    }
+
+    private void showNotification() {
+        Notification notification = buildNotification();
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, notification);
+    }
+
+    private Notification buildNotification() {
+        Resources resources = getResources();
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, getIntent(), 0);
+
+        return new Notification.Builder(this)
+                .setContentTitle(resources.getString(R.string.app_name))
+                .setContentText(resources.getString(R.string.countdown_over_message))
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentIntent(pendingIntent)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .build();
     }
 }
