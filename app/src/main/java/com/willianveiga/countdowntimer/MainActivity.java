@@ -36,7 +36,7 @@ import com.willianveiga.countdowntimer.Utils.TimeUtils;
 import java.util.Observable;
 import java.util.Observer;
 
-public class MainActivity extends Activity implements View.OnClickListener, Observer {
+public class MainActivity extends Activity implements View.OnFocusChangeListener, View.OnClickListener, Observer {
     private CountdownTimer countdownTimer;
 
     private EditText hoursEditText;
@@ -66,8 +66,23 @@ public class MainActivity extends Activity implements View.OnClickListener, Obse
     }
 
     private void addEventListeners() {
+        hoursEditText.setOnFocusChangeListener(this);
+        minutesEditText.setOnFocusChangeListener(this);
+        secondsEditText.setOnFocusChangeListener(this);
         startPauseResumeButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        EditText timeUnitEditText = ((EditText) view);
+        if (hasFocus) {
+            timeUnitEditText.setText(null);
+        }
+
+        if (!hasFocus && timeUnitEditText.getText().toString().isEmpty()) {
+            timeUnitEditText.setText(getInitialTimeUnit());
+        }
     }
 
     @Override
@@ -151,7 +166,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Obse
     }
 
     private void resetUserInterface() {
-        String initialTimeUnit = getResources().getString(R.string.initial_time_unit);
+        String initialTimeUnit = getInitialTimeUnit();
         hoursEditText.setText(initialTimeUnit);
         minutesEditText.setText(initialTimeUnit);
         secondsEditText.setText(initialTimeUnit);
@@ -163,6 +178,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Obse
         stopButton.setEnabled(false);
 
         startPauseResumeButton.setText(R.string.start);
+    }
+
+    private String getInitialTimeUnit() {
+        return getResources().getString(R.string.initial_time_unit);
     }
 
     /**
