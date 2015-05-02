@@ -19,22 +19,28 @@ package com.willianveiga.countdowntimer.Time;
 
 import android.os.CountDownTimer;
 
-import java.util.Observable;
-
-public class CountdownTimer extends Observable {
+public class CountdownTimer {
     private CountDownTimer countdownTimer;
+    private OnTickListener onTickListener;
+    private OnFinishListener onFinishListener;
+
+    public void setOnTickListener(OnTickListener onTickListener) {
+        this.onTickListener = onTickListener;
+    }
+
+    public void setOnFinishListener(OnFinishListener onFinishListener) {
+        this.onFinishListener = onFinishListener;
+    }
 
     public void start(long milliseconds) {
         int countdownInterval = 1000;
         countdownTimer = new CountDownTimer(milliseconds, countdownInterval) {
             public void onTick(long millisUntilFinished) {
-                setChanged();
-                notifyObservers(millisUntilFinished);
+                onTickListener.onTick(millisUntilFinished);
             }
 
             public void onFinish() {
-                setChanged();
-                notifyObservers();
+                onFinishListener.onFinish();
             }
         };
         countdownTimer.start();

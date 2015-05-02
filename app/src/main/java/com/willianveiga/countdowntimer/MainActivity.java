@@ -29,14 +29,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.willianveiga.countdowntimer.Time.CountdownTimer;
+import com.willianveiga.countdowntimer.Time.OnFinishListener;
+import com.willianveiga.countdowntimer.Time.OnTickListener;
 import com.willianveiga.countdowntimer.Utils.AlertDialogUtils;
 import com.willianveiga.countdowntimer.Utils.StringUtils;
 import com.willianveiga.countdowntimer.Utils.TimeUtils;
 
-import java.util.Observable;
-import java.util.Observer;
-
-public class MainActivity extends Activity implements View.OnFocusChangeListener, View.OnClickListener, Observer {
+public class MainActivity extends Activity implements View.OnFocusChangeListener, View.OnClickListener, OnTickListener, OnFinishListener {
     private CountdownTimer countdownTimer;
 
     private EditText hoursEditText;
@@ -50,11 +49,15 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        countdownTimer = new CountdownTimer();
-        countdownTimer.addObserver(this);
-
+        setUpCountdownTimer();
         setViewFields();
         addEventListeners();
+    }
+
+    private void setUpCountdownTimer() {
+        countdownTimer = new CountdownTimer();
+        countdownTimer.setOnTickListener(this);
+        countdownTimer.setOnFinishListener(this);
     }
 
     private void setViewFields() {
@@ -184,19 +187,14 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
         return getResources().getString(R.string.initial_time_unit);
     }
 
-    /**
-     * TODO
-     * CountdownTimer notifies its observers in two different situations.
-     * How could I distinguish both?
-     * This if/else checking the value smells ...
-     */
     @Override
-    public void update(Observable countdownTimer, Object milliseconds) {
-        if (milliseconds != null) {
-            updateTimeFields((long) milliseconds);
-        } else {
-            timeFinished();
-        }
+    public void onTick(long millisUntilFinished) {
+        updateTimeFields(millisUntilFinished);
+    }
+
+    @Override
+    public void onFinish() {
+        timeFinished();
     }
 
     private void updateTimeFields(long milliseconds) {
