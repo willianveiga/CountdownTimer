@@ -8,7 +8,7 @@
     <string name="resume">Resume</string>
     <string name="stop">Stop</string>
 
-    <string name="countdown_over_message">The Countdown is over!</string>
+    <string name="countdown_over_message">The countdown is over!</string>
     <string name="minimum_time_message">The minimum time is 1 second.</string>
     <string name="fields_empty_message">Time unit fields must not be empty.</string>
 </resources>
