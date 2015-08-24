@@ -90,21 +90,26 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.startPauseResumeButton:
-                switch (((Button) view).getText().toString()) {
-                    case "Start":
-                    case "Resume":
-                        startResumeCountdownTimer();
-                        break;
-                    case "Pause":
-                        pauseCountdownTimer();
-                        break;
-                }
-                break;
-            case R.id.stopButton:
-                stopCountdownTimer();
-                break;
+        Button button = (Button) view;
+
+        if (button.getId() == R.id.startPauseResumeButton) {
+            startPauseOrResumeCountdownTimer(button);
+        } else {
+            stopCountdownTimer();
+        }
+    }
+
+    private void startPauseOrResumeCountdownTimer(Button button) {
+        String startLabel = getResources().getString(R.string.start);
+        String resumeLabel = getResources().getString(R.string.resume);
+        String pauseLabel = getResources().getString(R.string.pause);
+
+        String buttonText = button.getText().toString();
+
+        if (buttonText.equals(startLabel) || buttonText.equals(resumeLabel)) {
+            startResumeCountdownTimer();
+        } else if (buttonText.equals(pauseLabel)) {
+            pauseCountdownTimer();
         }
     }
 
